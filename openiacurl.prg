@@ -1,7 +1,34 @@
+// https://forums.fivetechsupport.com/viewtopic.php?f=3&t=43171&p=259779&hilit=openai+OpenAI&sid=fe774b43794d5f56ca050c542ccd88a2#p259779
 #INCLUDE "hbClass.ch"
 #INCLUDE "hbcurl.ch"
 
 #DEFINE CRLF CHR(13)+CHR(10)
+
+
+FUNCTION TEST_OPENIA()
+  LOCAL cText,oAI
+
+  TEXT INTO cText
+       CHEST FOR RIBS:
+       There is a non displaced fracture of the anterolateral aspect of the right 7th rib.
+       There are wire sutures in the sternum. There is cardiomegaly and there is elongation and tortuosity of the aorta.
+  ENDTEXT
+
+  oAI := TOpenAI():New()
+  oAI:lDebug := .T.
+  //Open AI models allowed for completions are:
+  //text-davinci-003, text-davinci-002, text-curie-001, text-babbage-001, text-ada-001
+  //text-ada is the fastest and least expensive.
+  oAI:model  := "text-ada-001" //"text-davinci-003"
+  oAI:Prompt := "Code with ICD10 diagnosis codes the following radiological imaging transcription: " + CRLF + cText
+  oAI:Send()
+
+  IF !Empty( oAI:Response )
+     //    ...do whatever with oAI:Response
+  ENDIF
+
+RETURN oAI
+
 
 CLASS TOpenAI
 
